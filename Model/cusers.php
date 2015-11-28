@@ -16,10 +16,10 @@ class User {
     
     public function __construct ($conexion, $id, $name, $lastName, $email, $password, $type){
         $this->ID = $id;
-        $this->conexion = $conexion;
+        $this->Conexion = $conexion;
         $this->Name = $name;
         $this->LastName = $lastName;
-        $this->Email = $eMail;
+        $this->Email = $email;
         $this->Password = $password;
         $this->Type = $type;
     }
@@ -56,7 +56,7 @@ class User {
         
     public function SearchUser()
     {
-        $query = mysql_query("SELECT * FROM Users where ID='".$this->ID."'", $this->Conexion);
+        $query = mysql_query("SELECT * FROM users where ID='".$this->ID."'", $this->Conexion);
         if ($result = mysql_fetch_assoc($query))
         {
             $this->Name=		$result['Name'];
@@ -64,6 +64,23 @@ class User {
             $this->Password=	$result['Password'];
             $this->Email=		$result['Email'];
             $this->Type=		$result['Type'];
+        }
+        else
+        {
+            throw new Exception("User not found");
+        }
+    }
+	
+    public function SearchUserByEmail()
+    {
+        $query = mysql_query("SELECT * FROM Users WHERE Email='".$this->Email."'", $this->Conexion);
+        if ($result = mysql_fetch_assoc($query))
+        {
+            $this->Name =		$result['Name'];
+            $this->LastName =	$result['LastName'];
+            $this->Password =	$result['Password'];
+            $this->Email =		$result['Email'];
+            $this->Type =		$result['Type'];
         }
         else
         {
@@ -80,7 +97,7 @@ class User {
     }
     
     public function Access($page){
-        $query = mysql_query("SELECT * FROM Access, Users WHERE Access.UserType = Users.Type and Users.Name = '$this->Name' and Access.UserType='$this->Type' and Access.Page ='$page';", $this->Conexion);
+        $query = mysql_query("SELECT * FROM access, users WHERE Access.Type = users.Type and users.Name = '$this->Name' and access.Type='$this->Type' and Access.Page ='$page';", $this->Conexion);
                                 
         if ($result = mysql_fetch_assoc($query))
         {
@@ -95,7 +112,7 @@ class User {
     public static function AllUsers($conexion, $type){
         if ($type == 0) $type = "Admin"; else $type="Client";
 		
-        $consulta = mysql_query("SELECT * FROM Users WHERE Type = '$type';", $conexion);
+        $consulta = mysql_query("SELECT * FROM users WHERE Type = '$type';", $conexion);
         $i = 0;
         $table = [];
         while($result = mysql_fetch_assoc($consulta)){
@@ -114,8 +131,9 @@ class User {
         if (!$result)
             die("<div id='result-popup'>Error".mysql_error()."<br /> <input type='button' value='Ok' onclick=\"this.parentNode.style.display = 'none'\"; /></div>");
         else
-            echo "<div id='result-popup' >Data Saved<input type='button' value='OK' onclick=\"this.parentNode.style.display = 'none'\"; /></div>";
+            echo "<div id='result-popup'>Data Saved<input type='button' value='OK' onclick=\"this.parentNode.style.display = 'none'\"; /></div>";
     }
+	
     public function Edit(){	
         if ($this->Type==0) $this->Type = "Admin"; else $this->Type="Client";
         $this->Password = md5($this->Name.$this->Password."%#M=");
@@ -125,6 +143,7 @@ class User {
         else
             echo "<div id='result-popup'>Data Saved <input type='button' value='OK' onclick=\"this.parentNode.style.display = 'none'\"; /></div>";
     }
+	
     public function Delete(){	
         $result = mysql_query("DELETE FROM `usuario` WHERE idusuario = '$this->idusuario';", $this->conexion );
         if (!$result)

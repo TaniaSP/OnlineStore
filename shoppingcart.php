@@ -4,7 +4,7 @@
 <?php include('/includes/Header.php'); ?>
 <?php include('/includes/NavBar.php'); ?>
 
-<div class="main">
+<div class="content">
 	<h1>Shopping Cart</h1>
 </div>
 

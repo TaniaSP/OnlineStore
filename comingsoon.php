@@ -4,14 +4,11 @@
 <?php include('/includes/Header.php'); ?>
 <?php include('/includes/NavBar.php'); ?>
 
-
-<?php $conexion = new conexion("127.0.0.1", "root", "", "onlinestore"); ?>
-
-<div class="content">
-	<h1>Buy Shirts</h1>
+<div class="main">
+	<h1>Coming Soon</h1>
+	<p>Your request page will be available soon</p>
 </div>
 
 <?php include ('/includes/Footer.php'); ?>
-
 </body>
 </html>

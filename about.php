@@ -1,8 +1,10 @@
+<?php include('/Model/conexion.php'); ?>
+<?php include('/Model/cusers.php');?>
 <?php include('/includes/headerStart.php'); ?>
 <?php include('/includes/Header.php'); ?>
 <?php include('/includes/NavBar.php'); ?>
 
-<div class="main">
+<div class="content">
 	<h1>About</h1>
 	<p>Me me me me me me</p>
 	<p><strong>Tania</strong></p>

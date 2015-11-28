@@ -1,4 +1,10 @@
-<?php		
+<?php
+/*******
+	cshirt.php
+	Class Shirt
+	Basic shirt properties and methods
+	@ Tania Soto Pienda
+******/
 class Shirt
 {
     public $ID;

@@ -1,21 +1,21 @@
 <?php
-class  conexion {
-	public $id;
-	private $servidor;
-	private $usuario;
-	private $contrasena;
-	private $baseDeDatos;
+class conexion {
+	public $ID;
+	private $Server;
+	private $User;
+	private $Password;
+	private $DataBase;
 
-	public function __construct ($servidor="localhost", $usuario="root", $contrasena = "", $baseDeDatos="tiendaenlinea"){
-		$this->servidor  = $servidor;
-		$this->usuario  = $usuario;					
-		$this->baseDeDatos  = $baseDeDatos;
-		$this->contrasena  = $contrasena;
-		$this->id = mysql_pconnect($servidor, $usuario, $contrasena);
-		mysql_select_db($baseDeDatos);
+	public function __construct ($server="localhost", $user="root", $password = "", $database=""){
+		$this->Server  = $server;
+		$this->User  = $user;					
+		$this->DataBase  = $database;
+		$this->Password  = $password;
+		$this->ID = mysql_pconnect($server, $user, $password);
+		mysql_select_db($database);
         mysql_query("SET NAMES 'utf8'");
-		if (!$this->id) {
-			die('No pudo conectarse: '.mysql_error());
+		if (!$this->ID) {
+			die('No Conexion: '.mysql_error());
 		}
 	}
 }
