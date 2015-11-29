@@ -1,5 +1,5 @@
 <?php
-class conexion {
+class conexion { 
 	public $ID;
 	private $Server;
 	private $User;
@@ -18,5 +18,6 @@ class conexion {
 			die('No Conexion: '.mysql_error());
 		}
 	}
-}
+} 
 ?>
+

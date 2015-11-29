@@ -1,14 +1,15 @@
 body { font-family: 'Montserrat', Helvetica, Arial, sans-serif;font-size:14px; }
 a { text-decoration:none;color:#000; }
 a:active, a:visited {color:#000;}
-ul {list-style:none;padding:0; }
+ul {list-style:none;padding:0;margin:0; }
 .clearfix:after {content:"";display:table;clear:both}
 
 .container{ width:1000px;margin: 0 auto;}
 
 #menu {border-bottom:2px solid #000; border-top:2px solid #000;}
-#menu ul { text-transform:uppercase;font-size:0; }
-#menu ul li { font-weight:700;display:inline-block;font-size:15px;}
+#menu ul { text-transform:uppercase;}
+#menu ul li { font-weight:700;float:left;font-size:15px;}
+#menu ul li.lastFloat {float:right;}
 #menu ul li a {display:block;padding:0 10px;line-height:40px; }
 #menu ul li a:hover {background-color:#000;color:#fff;}
 

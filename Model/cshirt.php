@@ -16,8 +16,7 @@ class Shirt
     public $Color;
     public $Image;
 
-	public function __construct ($conexion, $id, $description, $price,$brand, $quantity, $size, $color, $image){
-        $this->Conexion = $conexion;
+	public function __construct ($id, $description, $price, $brand, $quantity, $size, $color, $image){
         $this->ID = $id;
         $this->Description= $description;
         $this->Price = $price;
@@ -42,65 +41,79 @@ class Shirt
         return $table;
     }
     
-    public function ShirtSearch($conexion){
-        $query = mysql_query("SELECT `Description`,`Price`,`Department`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
-                                "FROM `Shirts` Where ID = '$this->ID'", $conexion);
-        $shirt = "";
-        if($result = mysql_fetch_assoc($query)){
-            $shirt = new Shirt($conexion, $result['ID'], $result['Description'], $result['Price'], 
-                                    $result['Brand'], $result['Quantity'],
-                                    $result['Size'],$result['Color'],$result['Image']);
-        }
-        return $shirt;
+    public static function ShirtSearch($shirtID){
+		$conexion = new mysqli('localhost', 'root', '', 'onlinestore');
+ 		$query = $conexion->prepare("SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` FROM `Shirts` Where ID = ?");
+		$query->bind_param('i', $shirtID);
+		$shirt = new Shirt("","","","","","","", "");
+		$query->execute();
+		$query->bind_result($shirt->ID,$shirt->Description, $shirt->Price, $shirt->Brand,$shirt->Quantity, $shirt->Size, $shirt->Color, $shirt->Image);
+		$query->fetch();
+		$query->free_result();
+		$conexion->close();
+        return $shirt; 
     }  
 	
 	
-    public static function shirtsWithFilters($conexion, $size, $color, $order, $start, $quant){
+    public static function shirtsWithFilters($size, $color, $order, $start, $quant){
+		$conexion = new mysqli('localhost', 'root', '', 'onlinestore');
         $sqlOrder = "";
         $query = "";
         if ($order == "desc")
             $sqlOrder = " ORDER BY Price desc";
         else
             $sqlOrder = " ORDER BY Price asc";
+		
         if ($size != "" && $color != "")
         {
-            $query = "SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
-                                "FROM `shirts` WHERE Size = '$size' and Color = '$color' and Quantity > 0 $sqlOrder LIMIT $start, $quant;";
+            $query = $conexion->prepare("SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
+                                "FROM `shirts` WHERE Size = ? and Color = ? and Quantity > 0 $sqlOrder LIMIT ?, ?;");
+			$query->bind_param('ssss', $size, $color, $start, $quant);
         }
         else if ($size != "")
         {
-            $query = "SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
-                                "FROM `shirts` WHERE Size = '$size' and Quantity > 0 $sqlOrder LIMIT $start, $quant;";
+            $query = $conexion->prepare("SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
+                                "FROM `shirts` WHERE Size = ? and Quantity > 0 $sqlOrder LIMIT ?, ?;");
+			$query->bind_param('sss', $size, $start, $quant);
         }
         else if ($color != "")
         {
-            $query = "SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
-                                "FROM `shirts` WHERE Color = '$color' and Quantity > 0 $sqlOrder LIMIT $start, $quant;";
+            $query = $conexion->prepare("SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
+                                "FROM `shirts` WHERE Color = ? and Quantity > 0 $sqlOrder LIMIT ?, ?;");
+			$query->bind_param('sss', $color, $start, $quant);
         }
         else{
-            $query = "SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
-                                "FROM `shirts` WHERE Quantity > 0 $sqlOrder LIMIT $start, $quant;";
+            $query = $conexion->prepare("SELECT `ID`,`Description`,`Price`,`Brand`,`Quantity`,`Size`,`Color`,`Image` ".
+                                "FROM `shirts` WHERE Quantity > 0 $sqlOrder LIMIT ?, ?;");
+			$query->bind_param('ss', $start, $quant);
         }
+		$query->execute();
+		$query->bind_result($id, $description, $price, $brand, $quantity, $size, $color, $image);
+		$id = $description = $price =$brand = $quantity = $size = $color = $image = "";
         $i = 0;
         $table = [];
-        $query  = mysql_query($query, $conexion);
-        while($result = mysql_fetch_assoc($query)){
-            $table[$i] = new Shirt($conexion, $result['ID'], $result['Description'], $result['Price'], 
-                                    $result['Brand'], $result['Quantity'],
-                                    $result['Size'],$result['Color'],$result['Image']);
+		while ($query->fetch()){
+			$table[$i] = new Shirt($id, $description, $price, $brand, $quantity, $size, $color, $image);
             $i++;
-        }
+		}
+
         return $table;
+		
+		$query->free_result();
+		$conexion->close();
     }
     
         
-    public static function totalShirts($conexion){
-        $query = mysql_query("SELECT COUNT(*) AS 'Total' FROM shirts;", $conexion);
+    public static function totalShirts(){
         $total = 0;
-        while($result = mysql_fetch_assoc($query)){
-            $total = $result['Total'];
-        }
-        return $total;
+		$conexion = new mysqli('localhost', 'root', '', 'onlinestore');
+		$query = $conexion->prepare("SELECT COUNT(*) AS 'Total' FROM shirts;");
+		$query->execute();
+		$query->bind_result($total);
+		$query->fetch();
+		$query->free_result();
+		$conexion->close();
+		return $total;
     }
 	
     

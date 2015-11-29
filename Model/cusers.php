@@ -6,17 +6,15 @@ cusers.php
 	@ Tania Soto Pienda
 ******/
 class User {
-    public $Name;
     public $ID;
+    public $Name;
     public $LastName;
     public $Email;
     public $Password;
-    public $Conexion;
     public $Type;
-    
-    public function __construct ($conexion, $id, $name, $lastName, $email, $password, $type){
+
+    public function __construct ($id, $name, $lastName, $email, $password, $type){
         $this->ID = $id;
-        $this->Conexion = $conexion;
         $this->Name = $name;
         $this->LastName = $lastName;
         $this->Email = $email;
@@ -56,36 +54,26 @@ class User {
         
     public function SearchUser()
     {
-        $query = mysql_query("SELECT * FROM users where ID='".$this->ID."'", $this->Conexion);
-        if ($result = mysql_fetch_assoc($query))
-        {
-            $this->Name=		$result['Name'];
-            $this->LastName=	$result['LastName'];
-            $this->Password=	$result['Password'];
-            $this->Email=		$result['Email'];
-            $this->Type=		$result['Type'];
-        }
-        else
-        {
-            throw new Exception("User not found");
-        }
+		$conexion = new mysqli('localhost', 'root', '', 'onlinestore');
+		$query = $conexion->prepare("SELECT `ID`, `Name`, `LastName`, `Email`, `Password`, `Type` FROM `users` WHERE ID = ?");
+		$query->bind_param('s', $this->ID);
+		$query->execute();
+		$query->bind_result($this->ID, $this->Name, $this->LastName, $this->Email, $this->Password, $this->Type);
+		$query->fetch();
+		$query->free_result();
+		$conexion->close();
     }
 	
     public function SearchUserByEmail()
     {
-        $query = mysql_query("SELECT * FROM Users WHERE Email='".$this->Email."'", $this->Conexion);
-        if ($result = mysql_fetch_assoc($query))
-        {
-            $this->Name =		$result['Name'];
-            $this->LastName =	$result['LastName'];
-            $this->Password =	$result['Password'];
-            $this->Email =		$result['Email'];
-            $this->Type =		$result['Type'];
-        }
-        else
-        {
-            throw new Exception("User not found");
-        }
+		$conexion = new mysqli('localhost', 'root', '', 'onlinestore');
+		$query = $conexion->prepare("SELECT `ID`, `Name`, `LastName`, `Email`, `Password`, `Type` FROM `users` WHERE Email = ?");
+		$query->bind_param('s', $this->Email);
+		$query->execute();
+		$query->bind_result($this->ID, $this->Name, $this->LastName, $this->Email, $this->Password, $this->Type);
+		$query->fetch();
+		$query->free_result();
+		$conexion->close();
     }
     
     public function isAdmin()
@@ -97,7 +85,7 @@ class User {
     }
     
     public function Access($page){
-        $query = mysql_query("SELECT * FROM access, users WHERE Access.Type = users.Type and users.Name = '$this->Name' and access.Type='$this->Type' and Access.Page ='$page';", $this->Conexion);
+        $query = mysql_query("SELECT * FROM access, users WHERE Access.Type = users.Type and users.Name = '$this->Name' and access.Type='$this->Type' and Access.Page ='$page';", $Conexion);
                                 
         if ($result = mysql_fetch_assoc($query))
         {
@@ -107,16 +95,17 @@ class User {
         {
             return false;
         }
+
     }
     
-    public static function AllUsers($conexion, $type){
+    public static function AllUsers($type){
         if ($type == 0) $type = "Admin"; else $type="Client";
 		
-        $consulta = mysql_query("SELECT * FROM users WHERE Type = '$type';", $conexion);
+        $consulta = mysql_query("SELECT * FROM users WHERE Type = '$type';", $Conexion);
         $i = 0;
         $table = [];
         while($result = mysql_fetch_assoc($consulta)){
-            $table[$i] = new User($conexion, $result['ID'], $result['Name'], $result['LastName'], $result['Email'], $result['Password'], $result['Type']);
+            $table[$i] = new User($result['ID'], $result['Name'], $result['LastName'], $result['Email'], $result['Password'], $result['Type']);
             $i++;
         }
         return $table;
@@ -127,7 +116,7 @@ class User {
         if ($this->Type==0) $this->Type = "Admin"; else $this->Type="Client";
 		
 		$this->Password = md5($this->Name.$this->Password."%#M=");
-        $result =mysql_query("INSERT INTO `Users` (`ID`, `Name`,`LastName`, `Email`, `Password`, `Type`) VALUES ('$this->ID', '$this->Name','$this->LastName','$this->Email','$this->Password','$this->Type');", $this->Conexion);
+        $result =mysql_query("INSERT INTO `Users` (`ID`, `Name`,`LastName`, `Email`, `Password`, `Type`) VALUES ('$this->ID', '$this->Name','$this->LastName','$this->Email','$this->Password','$this->Type');", $Conexion);
         if (!$result)
             die("<div id='result-popup'>Error".mysql_error()."<br /> <input type='button' value='Ok' onclick=\"this.parentNode.style.display = 'none'\"; /></div>");
         else
@@ -137,7 +126,7 @@ class User {
     public function Edit(){	
         if ($this->Type==0) $this->Type = "Admin"; else $this->Type="Client";
         $this->Password = md5($this->Name.$this->Password."%#M=");
-        $result = mysql_query("UPDATE `Users` SET `Name` = '$this->Name', `LastName` = '$this->LastName', `Type` = '$this->Type' WHERE `ID` = '$this->ID' AND `Email` = '$this->Email';", $this->Conexion);
+        $result = mysql_query("UPDATE `Users` SET `Name` = '$this->Name', `LastName` = '$this->LastName', `Type` = '$this->Type' WHERE `ID` = '$this->ID' AND `Email` = '$this->Email';", $Conexion);
         if (!$result)
             die("<div id='result-popup'>Error".mysql_error()."<br /> <input type='button' value='OK' onclick=\"this.parentNode.style.display = 'none'\"; /></div>");
         else
@@ -145,7 +134,7 @@ class User {
     }
 	
     public function Delete(){	
-        $result = mysql_query("DELETE FROM `usuario` WHERE idusuario = '$this->idusuario';", $this->conexion );
+        $result = mysql_query("DELETE FROM `usuario` WHERE idusuario = '$this->idusuario';", $conexion );
         if (!$result)
             die("<div id='result-popup' >Error".mysql_error()."<br /> <input type='button' value='OK' onclick=\"this.parentNode.style.display = 'none'\"; /></div>");
         else
