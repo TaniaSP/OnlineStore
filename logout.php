@@ -1,7 +1,8 @@
+<!-- Logs the user out and destroys the session --> 
 <?php include('/Includes/mainIncludes.php'); ?>
-<?php include('/includes/headerStart.php'); ?>
-<?php include('/includes/Header.php'); ?>
-<?php include('/includes/NavBar.php'); ?>
+<?php include('/Includes/headerStart.php'); ?>
+<?php include('/Includes/Header.php'); ?>
+<?php include('/Includes/NavBar.php'); ?>
 
 <?php 
 

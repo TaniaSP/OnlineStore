@@ -1,21 +1,27 @@
 <?php 
-$loginHTML = $logoutHTML = $cartItemsCount = "";
+$loginHTML = $logoutHTML =  "";
+# Get the number of items in shopping cart, if empty then print nothing
+function getShoppingCart(){
+
+	$cartItemsCount = "";
+	if(isset($_SESSION['myuser'])) {
+		$user = $_SESSION['myuser']; 
+		$cartItemsCount = Cart::itemsCount($user->ID);
+		if ($cartItemsCount > 0) {
+			$cartItemsCount = "(".$cartItemsCount.")";
+		}
+		
+		else {
+			$cartItemsCount = "";
+		}
+	}
+	return $cartItemsCount;
+}
+
 if(isset($_SESSION['myuser'])) {
-	$user = $_SESSION['myuser']; 
-	$cartItemsCount = Cart::itemsCount($user->ID);
-	if ($cartItemsCount > 0) {
-		$cartItemsCount = "(".$cartItemsCount.")";
-	}
-	
-	else {
-		$cartItemsCount = "";
-	}
-	
-	$userHTML = "<li><a href='/shoppingcart.php'>".$user->Name.' '.$user->LastName."</a></li>";
 	$logoutHTML = "<li><a href='/logout.php'>Log Out</a></li>";
 }
-else
-{
+else {
 	$loginHTML = "<li><a href='/login.php'>Log In</a></li>";
 }
 ?>
@@ -26,6 +32,6 @@ else
 		<li><a href="/buy.php">Buy</a></li>
 		<?php echo $loginHTML; ?>
 		<?php echo $logoutHTML; ?>
-		<li class="lastFloat"><a href="/shoppingcart.php" id="ShoppingCart">Shopping Cart <i class="fa fa-shopping-cart"></i> <span class="shoppingcart"><?php echo $cartItemsCount; ?></span></a>
+		<li class="lastFloat"><a href="/shoppingcart.php" id="ShoppingCart">Shopping Cart <i class="fa fa-shopping-cart"></i> <span id="shoppingcartCount"><?php echo getShoppingCart(); ?></span></a>
 	</ul>
 </div>

@@ -23,3 +23,5 @@ footer  {text-align:center;}
 
 #shirts-list {font-size:0;}
 #shirts-list li {display:inline-block;font-size:15px;width:250px;height:350px;}
+
+.error {color:#ff0000; }

@@ -1,6 +1,6 @@
-<?php include('/Includes/mainIncludes.php'); ?>
-
 <?php
+# Full Review of the shirt, the user can also add the shirt to the shopping cart
+include('/Includes/mainIncludes.php'); 
 
 if (!isset($_GET['ajax'])) { 
 	include('/includes/headerStart.php');
@@ -41,7 +41,6 @@ if (isset($_GET['addtocart'])) {
 		echo "<p><input type='number' name='shirt$Shirt->ID' id='shirt$Shirt->ID' value='1' />";
 		if(isset($_SESSION['myuser'])) {
 			$user = $_SESSION['myuser']; 
-			
 			echo "<a href='#' onclick=\"AjaxCall('shirt','ajax=1&addtocart=1&user=$user->ID&shirt=$Shirt->ID&quant='+shirt$Shirt->ID.value, 'shirts-container');\" >Add To Cart</a></p>";
 		}
 		else
@@ -49,7 +48,6 @@ if (isset($_GET['addtocart'])) {
 		?>
 	</div>
 </div>
-
 
 <?php include ('/includes/Footer.php'); ?>
 </body>

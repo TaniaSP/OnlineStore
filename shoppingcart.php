@@ -6,6 +6,7 @@
 
 <div class="content">
 	<h1>Shopping Cart</h1>
+	<p>Coming Soon</p>
 </div>
 
 <?php include ('/includes/Footer.php'); ?>

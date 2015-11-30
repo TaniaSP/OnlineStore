@@ -1,8 +1,8 @@
-
+<!-- Log In page: compares user inputs with the database to validate the user --> 
 <?php include('/Includes/mainIncludes.php'); ?>
-<?php include('/includes/headerStart.php'); ?>
-<?php include('/includes/Header.php'); ?>
-<?php include('/includes/NavBar.php'); ?>
+<?php include('/Includes/headerStart.php'); ?>
+<?php include('/Includes/Header.php'); ?>
+<?php include('/Includes/NavBar.php'); ?>
 
 <div class="content">
 	<h1>Log In</h1>
@@ -30,7 +30,6 @@ if (isset($_POST['email']))
 		
 		$user = new User("", "", "", $email, $password, "");
 		$user->SearchUserByEmail();
-		//if ($user->password == md5($user->Name.$password."%#M=")) encrypted psw on gold
 		if ($user->Password == $password)
 		{
 			$_SESSION['myuser'] = $user;
@@ -39,12 +38,12 @@ if (isset($_POST['email']))
 		}
 		else
 		{
-			echo "<p>Invalid username</p>";
+			echo "<p class='error'>Invalid username</p>";
 		}
 	}
 	catch (Exception $e)
 	{
-		echo "<p>Invalid username or password</p>";
+		echo "<p class='error'>Invalid username or password</p>";
 	}
 }
 ?>

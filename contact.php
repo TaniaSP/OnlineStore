@@ -5,7 +5,7 @@
 
 <div class="main">
 	<h1>Contact Us (Me)</h1>
-	<p>This will be a contact form</p>
+	<p>Coming Soon</p>
 </div>
 
 <?php include ('/includes/Footer.php'); ?>

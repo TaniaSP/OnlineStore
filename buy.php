@@ -1,3 +1,6 @@
+<?php 
+#the user can view the available shirts to buy here, also the user can add a shirt to the shopping cart and filter the data.
+?>
 
 <?php include('/Includes/mainIncludes.php'); ?>
 
@@ -9,7 +12,6 @@ if (!isset($_GET['ajax'])) {
 }
 else {
 	session_start();
-	
 }
 
 
@@ -22,6 +24,7 @@ $size = "";
 $color = "";
 $order	 = "";
 
+# get the filters from an Ajax call
 if (isset($_GET['color']))
 	$color = $_GET['color'];
 if (isset($_GET['size']))
@@ -35,15 +38,17 @@ if (isset($_GET['actual']))
 if (isset($_GET['itemsPerPage']))
 	$itemsPerPage = $_GET['itemsPerPage'];
 
-
+# ask if there is a user in a session
 if(isset($_SESSION['myuser'])) {
 	$user = $_SESSION['myuser']; 
 }
+
 if ($size == 'all')
 	$size = "";
 if ($color == 'all')
 	$color = "";
 
+# add a shirt to the shopping cart
 if (isset($_GET['addtocart'])) {
 	$userID = $_GET['user'];
 	$shirtQuant =  $_GET['quant'];
@@ -51,6 +56,7 @@ if (isset($_GET['addtocart'])) {
 	Cart::AddShirt($userID, $shirtID, $shirtQuant);
 }
 
+# this function gets all the shirts with the provided filters
 function getShirts($size, $color, $order, $start, $itemsPerPage, $actual)
 {
 	global $pagesQuant;
@@ -60,8 +66,8 @@ function getShirts($size, $color, $order, $start, $itemsPerPage, $actual)
         $start = $pagesQuant;
     $shirts = shirt::shirtsWithFilters($size, $color, $order, $start, $itemsPerPage);
     ?>
-    <div id="shirts-wrapper" name="wrapperPlayeras">
-    <ul id="shirts-list" name="listaPlayeras">
+    <div id="shirts-wrapper">
+    <ul id="shirts-list">
         <?php
         foreach ($shirts as $row){
 			echo "<li class='ShirtWrapper' name='ShirtWrapper'>";
@@ -77,12 +83,10 @@ function getShirts($size, $color, $order, $start, $itemsPerPage, $actual)
                     echo "<p><input type='number' name='shirt$row->ID' id='shirt$row->ID' value='1' />";
 					if(isset($_SESSION['myuser'])) {
 						$user = $_SESSION['myuser']; 
-						
 						echo "<a href='#' onclick=\"AjaxCall('buy','ajax=1&addtocart=1&shirt=$row->ID&user=$user->ID&quant='+shirt$row->ID.value, 'shirts-container');\" >Add To Cart</a></p>";
 					}
 					else
 						echo "<a href='/login.php' >Add To Cart</a></p>";
-						
                     echo "</div>";
 					echo "</div>";
 			echo "</li>";
@@ -126,8 +130,6 @@ function getShirts($size, $color, $order, $start, $itemsPerPage, $actual)
     }
     echo "</div>";
     ?>
-        
-   
     </div>
     <?php
 }    
